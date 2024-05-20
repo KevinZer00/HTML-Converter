@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML to JSON Conversion</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>HTML Converter</h1>
+        <textarea id="html-input" rows="10" cols="80" placeholder="Enter your HTML here"></textarea>
+        <div class="buttons">
+            <input type="file" id="file-input" accept=".html">
+            <button id="convert-json">Convert to JSON</button>
+            <button id="convert-xml">Convert to XML</button>
+            <button id="convert-markdown">Convert to Markdown</button>
+            <button id="convert-csv">Convert to CSV</button>
+        </div>
+        <div class="outputs">
+            <h2>JSON:</h2>
+            <pre id="json-output"></pre>
+            <button id="download-json" style="display:none;">Download JSON</button>
+
+            <h2>XML:</h2>
+            <pre id="xml-output"></pre>
+            <button id="download-xml" style="display:none;">Download XML</button>
+
+            <h2>Markdown:</h2>
+            <pre id="markdown-output"></pre>
+            <button id="download-markdown" style="display:none">Download Markdown</button>
+
+            <h2>CSV:</h2>
+            <pre id="csv-output"></pre>
+            <button id="download-csv" style="display:none">Download CSV</button>
+        </div>
+    </div>
+    <script src="json.js"></script>
+    <script src="xml.js"></script>
+    <script src="markdown.js"></script>
+    <script src="csv.js"></script>
+    <script src="https://unpkg.com/turndown/dist/turndown.js"></script> <!--include this library for markdown conversion-->
+
+</body>
+
+</html>

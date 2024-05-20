@@ -65,22 +65,19 @@ function elementToJson(element) {
     return obj;
 }
 
-
 // Step 3: Convert HTML to JSON
 function htmlToJson() {
     const htmlInput = document.getElementById('html-input').value; // retreive HTML input from text box
-    const parser = new DOMParser(); // create instance
+    const parser = new DOMParser(); // convert HTML string to DOM object so that it can be converted to JSON 
     const doc = parser.parseFromString(htmlInput, 'text/html'); // convert HTML string to object
     const json = elementToJson(doc.documentElement); // convert the object to JSON by calling function
-    const jsonString = JSON.stringify(json, null, 2); // convert JSON to string 
+    const jsonString = JSON.stringify(json, null, 2); // convert JSON to string and add vertical spacing
 
     document.getElementById('json-output').textContent = jsonString; //display the JSON inside <pre> element
     document.getElementById('download-json').style.display = 'inline'; // display download button once JSON data is displayed otherwise would have to handle error scenario
 
     return jsonString; // store the JSON string for download
 }
-
-
 
 // Step 4: Add functionality to download JSON as a file
 function downloadJson(jsonString) {
@@ -96,8 +93,6 @@ function downloadJson(jsonString) {
 
     URL.revokeObjectURL(url); // revoke the Blob URL to free up resources
 }
-
-
 
 // Step 5: Attach event listeners to the buttons
 document.getElementById('file-input').addEventListener('change', handleFileUpload); // event listener for file upload function
