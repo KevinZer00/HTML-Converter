@@ -99,6 +99,9 @@ input[type="file"] {
     font-size: 16px;
 }
 
+pre#json-output, pre#xml-output, pre#markdown-output, pre#csv-output { 
+    height: 300px;
+}
 
 .outputs h2 {
     text-align: center;
