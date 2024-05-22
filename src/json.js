@@ -35,70 +35,39 @@ const doc = parser.parseFromString(html, 'text/html'); // convert HTML string to
     }
 }
 
-// Step 2: Add elements to object
-function elementToJson(element) {
-    const obj =
-    {
-        tag: element.tagName.toLowerCase(), // OPTIONAL: convert to lowercase; HTML isn't case sensitive, JS is
-        attributes: {}, // initialize empty object for attributes (class, id, etc)
-        children: [] // initialize empty array for child elements 
-    };
+function tableToJson() {
+    const inputHTML = document.getElementById('html-input').value; // access the value of whatever is HTML input
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(inputHTML, 'text/html');
+    const table = doc.querySelector('table');
 
-    // loop through attributes and add them to the object 
-    for (let attrib of element.attributes) { // all attributes of current HTML element with name + value
-        obj.attributes[attrib.name] = attrib.value; // store element's attributes
+    if (!table) {
+        document.getElementById('json-output').textContent = 'No table found';
+        document.getElementById('download-csv').style.display = 'none';
+        return null;
     }
 
-    // Loop through child nodes
-    for (let child of element.childNodes) {
-        if (child.nodeType === 1) {  // check if element node (div, p, etc)
-            obj.children.push(elementToJson(child)); // process child elements recursively
-        }
-        else if (child.nodeType === 3) { // text node 
-            const textContent = child.textContent.trim(); // remotes blank on both ends
-            if (textContent) { // if not empty
-                obj.children.push(textContent); // add text content 
-            }
-        }
-    }
+    const headers = Array.from(table.querySelectorAll('th')).map(th => th.innerText.trim()); 
+    const rows = table.querySelectorAll('tbody tr');
+    const jsonData = Array.from(rows).map(row => {
+        const cells = row.querySelectorAll('td');
+        let obj = {};
+        cells.forEach((cell, index) => {
+            obj[headers[index]] = cell.innerText.trim();
+        });
+        return obj;
+    });
 
-    return obj;
+    const jsonString = JSON.stringify(jsonData, null, 2);
+    document.getElementById('json-output').innerText = jsonString;
+    return jsonString;
 }
 
-// Step 3: Convert HTML to JSON
-function htmlToJson() {
-    const htmlInput = document.getElementById('html-input').value; // retreive HTML input from text box
-    const parser = new DOMParser(); // convert HTML string to DOM object so that it can be converted to JSON 
-    const doc = parser.parseFromString(htmlInput, 'text/html'); // convert HTML string to object
-    const json = elementToJson(doc.documentElement); // convert the object to JSON by calling function
-    const jsonString = JSON.stringify(json, null, 2); // convert JSON to string and add vertical spacing
-
-    document.getElementById('json-output').textContent = jsonString; //display the JSON inside <pre> element
-    document.getElementById('download-json').style.display = 'inline'; // display download button once JSON data is displayed otherwise would have to handle error scenario
-
-    return jsonString; // store the JSON string for download
-}
-
-// Step 4: Add functionality to download JSON as a file
-function downloadJson(jsonString) {
-    const blob = new Blob([jsonString], { type: 'application/json' }); // create a blob to store JSON stuff
-    const url = URL.createObjectURL(blob); // create temp URL pointing to blob 
-
-    const a = document.createElement('a'); // create an <a> element that will trigger download
-    a.href = url; // set the destination to blob URL
-    a.download = 'test.json'; // set file name 
-    document.body.appendChild(a); // append the <a> to the body. NOTE: this will not be seen
-    a.click(); // click the <a> to trigger the download
-    document.body.removeChild(a); // remove the <a> after
-
-    URL.revokeObjectURL(url); // revoke the Blob URL to free up resources
-}
 
 // Step 5: Attach event listeners to the buttons
 document.getElementById('file-input').addEventListener('change', handleFileUpload); // event listener for file upload function
-
 document.getElementById('convert-json').addEventListener('click', function() { // event listener for convert JSON button
-    const jsonString = htmlToJson(); // calls function to convert HTML to JSON
+    const jsonString = tableToJson(); // calls function to convert HTML to JSON
     document.getElementById('download-json').addEventListener('click', function() { // event listener for download JSON button
         downloadJson(jsonString); // calls function to download JSON with newly converted string
     });
